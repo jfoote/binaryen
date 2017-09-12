@@ -551,7 +551,16 @@ private:
     ret->name = makeLabel();
     breakableStack.push_back(ret);
     hangStack.push_back(ret);
-    ret->body = makeMaybeBlock(type);
+    // with decent chance, ensure a branch back
+    if (oneIn(2)) {
+      ret->body = makeMaybeBlock(type);
+    } else {
+      ret->body = builder.makeBlock({
+        makeMaybeBlock(none),
+        builder.makeBreak(ret->name, nullptr, makeCondition()),
+        make(type)
+      });
+    }
     breakableStack.pop_back();
     hangStack.pop_back();
     if (HANG_LIMIT > 0) {
@@ -1148,6 +1157,12 @@ private:
 
   bool oneIn(Index x) {
     return upTo(x) == 0;
+  }
+
+  bool onceEvery(Index x) {
+    static int counter = 0;
+    counter++;
+    return counter % x == 0;
   }
 
   // apply upTo twice, generating a skewed distribution towards
