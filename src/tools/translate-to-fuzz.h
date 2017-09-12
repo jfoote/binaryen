@@ -551,15 +551,16 @@ private:
     ret->name = makeLabel();
     breakableStack.push_back(ret);
     hangStack.push_back(ret);
-    // with decent chance, ensure a branch back
+    // either create random content, or do something more targeted
     if (oneIn(2)) {
       ret->body = makeMaybeBlock(type);
     } else {
-      ret->body = builder.makeBlock({
-        makeMaybeBlock(none),
-        builder.makeBreak(ret->name, nullptr, makeCondition()),
-        make(type)
-      });
+      // ensure a branch back. also optionally create some loop vars
+      std::vector<Expression*> list;
+      list.push_back(makeMaybeBlock(none)); // primary contents
+      list.push_back(builder.makeBreak(ret->name, nullptr, makeCondition())); // possible branch back
+      list.push_back(make(type)); // final element, so we have the right type
+      ret->body = builder.makeBlock(list);
     }
     breakableStack.pop_back();
     hangStack.pop_back();
