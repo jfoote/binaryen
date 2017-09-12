@@ -20,7 +20,6 @@
 //
 
 /*
-memory too
 high chance for set at start of loop
   high chance of get of a set local in the scope of that scope
     high chance of a tee in that case => loop var
@@ -516,6 +515,10 @@ private:
         // smaller blocks past the limit
         num /= 2;
       }
+    }
+    // not likely to have a block of size 1
+    if (num == 0 && !oneIn(10)) {
+      num++;
     }
     while (num > 0 && !finishedInput) {
       ret->list.push_back(make(none));
