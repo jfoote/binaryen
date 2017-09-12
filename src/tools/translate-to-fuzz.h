@@ -90,6 +90,7 @@ private:
 
   // the memory that we use, a small portion so that we have a good chance of
   // looking at writes (we also look outside of this region with small probability)
+  // this should be a power of 2
   static const int USABLE_MEMORY = 32;
 
   // the number of runtime iterations (function calls, loop backbranches) we
@@ -158,6 +159,13 @@ private:
     wasm.memory.exists = true;
     // use one page
     wasm.memory.initial = wasm.memory.max = 1;
+    // init some data
+    wasm.memory.segments.emplace_back(builder.makeConst(Literal(int32_t(0))));
+    auto num = upTo(USABLE_MEMORY * 2);
+    for (size_t i = 0; i < num; i++) {
+      auto value = upTo(512);
+      wasm.memory.segments[0].data.push_back(value >= 256 ? 0 : (value & 0xff));
+    }
   }
 
   void setupTable() {

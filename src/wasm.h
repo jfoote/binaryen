@@ -654,8 +654,7 @@ public:
     Expression* offset;
     std::vector<Name> data;
     Segment() {}
-    Segment(Expression* offset) : offset(offset) {
-    }
+    Segment(Expression* offset) : offset(offset) {}
     Segment(Expression* offset, std::vector<Name>& init) : offset(offset) {
       data.swap(init);
     }
@@ -684,6 +683,7 @@ public:
     Expression* offset;
     std::vector<char> data; // TODO: optimize
     Segment() {}
+    Segment(Expression* offset) : offset(offset) {}
     Segment(Expression* offset, const char* init, Address size) : offset(offset) {
       data.resize(size);
       std::copy_n(init, size, data.begin());
