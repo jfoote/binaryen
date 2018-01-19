@@ -126,7 +126,9 @@ void ThreadPool::initialize(size_t num) {
 }
 
 size_t ThreadPool::getNumCores() {
-#if EMSCRIPTEN
+// #if EMSCRIPTEN
+// See https://github.com/WebAssembly/binaryen/issues/1376
+#if 1
   return 1;
 #else
   size_t num = std::max(1U, std::thread::hardware_concurrency());
